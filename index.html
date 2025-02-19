@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Web Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Dynamic Data Fetching with AJAX</h1>
+        <button id="fetchDataBtn" class="btn btn-primary mb-4">Fetch Data</button>
+        <div id="dataContainer"></div>
+    </div>
+    <script>
+        document.getElementById('fetchDataBtn').addEventListener('click', fetchData);
+
+        function fetchData() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://jsonplaceholder.typicode.com/users', true);
+
+            xhr.onload = function() {
+                if (this.status === 200) {
+                    const users = JSON.parse(this.responseText);
+                    let output = '';
+
+                    users.forEach(function(user) {
+                        output += `
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">${user.name}</h5>
+                                    <p class="card-text"><strong>Email:</strong> ${user.email}</p>
+                                    <p class="card-text"><strong>Phone:</strong> ${user.phone}</p>
+                                    <p class="card-text"><strong>Company:</strong> ${user.company.name}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    document.getElementById('dataContainer').innerHTML = output;
+                } else {
+                    document.getElementById('dataContainer').innerHTML = '<p class="text-danger">Error fetching data</p>';
+                }
+            };
+
+            xhr.onerror = function() {
+                document.getElementById('dataContainer').innerHTML = '<p class="text-danger">Request error...</p>';
+            };
+
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
